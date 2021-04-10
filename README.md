@@ -1,2 +1,2 @@
-# thsltrans-project
-ThSL translator web application (SKE senoir project 2021, Kasetsart University)
+# ThSL Translator Web Application
+ThSL translator web application (SKE senior project 2021, Kasetsart University)
