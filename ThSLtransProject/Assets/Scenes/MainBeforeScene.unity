@@ -384,6 +384,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af61cbe3620514efea05da236ce8db7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  contentWindow: {fileID: 0}
+  recallTextObject: {fileID: 0}
 --- !u!4 &318538429
 Transform:
   m_ObjectHideFlags: 0
@@ -479,7 +481,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 445789905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 318538428}
+        m_MethodName: stratText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &445789905
 MonoBehaviour:
   m_ObjectHideFlags: 0

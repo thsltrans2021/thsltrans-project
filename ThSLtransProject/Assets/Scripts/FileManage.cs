@@ -12,38 +12,56 @@ public class FileManage : MonoBehaviour
 {
     string path;
     string namePDF = "test";
-    public Transform contentWindow;
-    public GameObject recallTextObject;
+    // public Transform contentWindow;
+    // public GameObject recallTextObject;
 
     public void stratText() {
-        Console.WriteLine(" Enter Your Name:"); 
 
         // string readFromFilePath = Application.streamingAssetsPath + "test" + ".txt";
         string readFromFilePath = "Assets/Resources/test.txt";
 
-        // string[] readText = File.ReadAllLines(path);
+        // // string[] readText = File.ReadAllLines(path);
 
-        List<string> fineLines = File.ReadAllLines(readFromFilePath).ToList();
+        List<string> fineLines = File.ReadLines(readFromFilePath).ToList();
+        // List<string> fineLines = File.ReadAllLines(readFromFilePath).stream().filter(str -> !str.trim().isEmpty()).collect(Collectors.toList());
+        // List<string> fineLines = File.ReadAllLines(readFromFilePath).Where(s => s.Trim() != string.Empty).ToArray();
+        // string inLine = reader.ReadToEnd(readFromFilePath);
+        var myList = readFromFilePath.Split(new string[] { "\r\n" }, StringSplitOptions.None).ToList();
+        // myList = myList.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+
+        // var doc = readFromFilePath.Split(new string[] { "\r\n" } , System.StringSplitOptions.None);
         // foreach (string s in readText)
         // {
         //     Console.WriteLine(s);
         // }
 
-        foreach (string line in fineLines){
-            Instantiate(recallTextObject, contentWindow);
-            recallTextObject.GetComponent<Text>().text += (line + "\n" );
+        Debug.Log(fineLines.Count());
+     
+        for (int i = 0; i < fineLines.Count; i++)
+            {
+                if (fineLines[i] == "")
+                {
+                    fineLines.RemoveAt(i--);
+                }
+                else {
+                    fineLines[i] = fineLines[i].Trim();
+                     // Instantiate(recallTextObject, contentWindow);
+                    // recallTextObject.GetComponent<Text>().text += (fineLines[i] + "\n" );
+                    Debug.Log( fineLines[i]);
+                }
+            }
 
-            Debug.Log(line);
-        }
+        Debug.Log(fineLines.Count());
+
 
     }
 
-    public void BrowseFile()
-    {
-        path = EditorUtility.OpenFilePanel("Show","", "pdf");
+    // public void BrowseFile()
+    // {
+    //     path = EditorUtility.OpenFilePanel("Show","", "pdf");
     
-        // StartCoroutine(openPDF());
-    }
+    //     // StartCoroutine(openPDF());
+    // }
 
 
     void openPDF()
