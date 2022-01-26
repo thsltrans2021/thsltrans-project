@@ -279,6 +279,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9185147661290717218, guid: 83cbe2f266bdada419c00aa5c9f27f49,
+        type: 3}
+      propertyPath: animCtrlNameToBeDeleted
+      value: newController
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83cbe2f266bdada419c00aa5c9f27f49, type: 3}
 --- !u!4 &4683472876216589291 stripped

@@ -8,7 +8,7 @@ public class RainController : MonoBehaviour
 
     public bool changeSentence = false;
     public bool changeCtrl = false;
-    public string animCtrlNameToBeDeleted;
+    public string animCtrlNameToBeDeleted = "newController";
     public string newAnimCtrlName = "newController";
     
     Animator animator;
