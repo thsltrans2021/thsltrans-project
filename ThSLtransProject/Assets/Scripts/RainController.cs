@@ -17,7 +17,7 @@ public class RainController : MonoBehaviour
     private string defaultAnimCtrlPath = "RainAnimCtrl";
    
     const string IDLE_ANIM = "Rain@idle";
-    const string MYSELF_ANIM = "MYSELF";
+    const string MYSELF_ANIM = "I";
     const string WALK_ANIM = "PERSONbody-WALK";
     const string YOU_ANIM = "YOU";
 
