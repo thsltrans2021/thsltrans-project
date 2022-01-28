@@ -1,108 +1,168 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+
+// https://docs.unity3d.com/ScriptReference/AnimatorOverrideController.ApplyOverrides.html
+public class AnimationClipOverrides : List<KeyValuePair<AnimationClip, AnimationClip>>
+{
+    public AnimationClipOverrides(int capacity) : base(capacity) { }
+
+    public AnimationClip this[string name]
+    {
+        get { return this.Find(x => x.Key.name.Equals(name)).Value; }
+        set
+        {
+            int index = this.FindIndex(x => x.Key.name.Equals(name));
+            if (index != -1)
+                this[index] = new KeyValuePair<AnimationClip, AnimationClip>(this[index].Key, value);
+        }
+    }
+}
 
 public class AnimationManager
 {
 
-    private Animator avatarAnimator;
-    private string animCtrlParamName = "playSentence";
+    private Animator _avatarAnimator;
+    private RuntimeAnimatorController _defaultAvatarAnimatorCtrl;
+    private string[] AnimStates = { "state1", "state2", "state3", "state4", "state5", "state6", "state7", "state8", "state9", "state10" };
 
-    private const string ANIMATION_PATH = "Animations/";
-    private const string ANIMCTRL_PATH = "AnimatorControllers/";
-    
-    public AnimationManager(Animator animator)
+    private const string AnimCtrlParamPlay = "Play";
+    private const string AnimCtrlParamEnd = "End";
+    private const string AnimationPath = "Animations/";
+    private const string AnimCtrlPath = "AnimatorControllers/";
+
+    public Animator AvatarAnimator => _avatarAnimator;
+
+    public AnimationManager(Animator animator, string animCtrlName = null)
     {
-        avatarAnimator = animator;
+        _avatarAnimator = animator;
+        if (animCtrlName != null)
+        {
+            LoadAnimatorControllerToAnimator(animCtrlName);
+        }
+        _defaultAvatarAnimatorCtrl = _avatarAnimator.runtimeAnimatorController;
+    }
+
+    public void PlayAnimation()
+    {
+        _avatarAnimator.SetInteger(AnimCtrlParamPlay, 1);
+    }
+
+    public void StopAnimation()
+    {
+        _avatarAnimator.SetInteger(AnimCtrlParamPlay, 0);
+    }
+
+    public void ForceStopAnimation()
+    {
+        StopAnimation();
+        ChangeAnimationState("idle");
+    }
+
+    public void ForcePlayAnimation(string animClipName)
+    {
+        //ChangeAnimationState(ANIM_STATES[0]);
+    }
+
+    public void ResetAnimatorControllerStates()
+    {
+        Object.Destroy(_avatarAnimator.runtimeAnimatorController);
+        _avatarAnimator.runtimeAnimatorController = _defaultAvatarAnimatorCtrl;
+        SetAnimationEndingPosition(AnimStates.Length);
+        ForceStopAnimation();
+    }
+
+    // Position starts at 1, unlike the index which starts at 0
+    public void SetAnimationEndingPosition(int targetStatePosition)
+    {
+        _avatarAnimator.SetInteger(AnimCtrlParamEnd, targetStatePosition);
     }
 
     public void LoadAnimatorControllerToAnimator(string animCtrlFilename)
     {
-        avatarAnimator.runtimeAnimatorController = LoadAnimatorController(animCtrlFilename);
+        _avatarAnimator.runtimeAnimatorController = LoadAnimatorController(animCtrlFilename);
     }
 
-    public void AssignAnimatorControllerToAnimator(UnityEditor.Animations.AnimatorController newAnimatorCtrl)
+    public void AssignOverrideControllerToAvatarAnimatorController(AnimatorOverrideController overrideController)
     {
-        avatarAnimator.runtimeAnimatorController = newAnimatorCtrl;
+        _avatarAnimator.runtimeAnimatorController = overrideController;
+        _avatarAnimator.Update(0.0f);
     }
 
-    // TODO: automatically play animation from first sentence to last
-    public void StartAnimation()
+    public AnimatorOverrideController CreateAnimatorOverrideController(Animator animator = null)
     {
-        avatarAnimator.SetInteger(animCtrlParamName, 1);
-    }
-    
-    public UnityEditor.Animations.AnimatorController CreateAnimatorController(string name)
-    {
-        var controller = UnityEditor.Animations.AnimatorController.CreateAnimatorControllerAtPath("Assets/Resources/" + ANIMCTRL_PATH + name + ".controller");
-        controller.AddParameter(animCtrlParamName, AnimatorControllerParameterType.Int);
-        return controller;
+        if (animator == null)
+        {
+            return new AnimatorOverrideController(_avatarAnimator.runtimeAnimatorController);
+        } else
+        {
+            return new AnimatorOverrideController(animator.runtimeAnimatorController);
+        }
+        
     }
 
     public RuntimeAnimatorController LoadAnimatorController(string animCtrlFilename)
     {
-        return Resources.Load(ANIMCTRL_PATH + animCtrlFilename) as RuntimeAnimatorController;
+        return Resources.Load(AnimCtrlPath + animCtrlFilename) as RuntimeAnimatorController;
     }
 
-    public void DeleteAnimatorController(RuntimeAnimatorController controller)
+    public AnimationClip LoadAnimationClip(string animClipName)
     {
-        string path = AssetDatabase.GetAssetPath(controller);
-        Debug.Log("Delete: " + path);
-        AssetDatabase.DeleteAsset(path);
-    }
-
-    public UnityEditor.Animations.AnimatorState AddAnimationClip(UnityEditor.Animations.AnimatorController controller, string animationName)
-    {
-        // create a new state with the motion (animation clip) at root state machine
-        AnimationClip clip = Resources.Load(ANIMATION_PATH + animationName) as AnimationClip;
+        AnimationClip clip = Resources.Load(AnimationPath + animClipName) as AnimationClip;
         if (clip == null)
         {
-            Debug.Log("Cannot find an animation clip called " + animationName);
+            Debug.Log($"Cannot find an animation clip called {animClipName}");
         }
         else
         {
-            Debug.Log(clip.ToString());
+            Debug.Log($"Load: {clip}");
         }
 
-        if (Resources.Load("Temp/" + animationName + ".fbx"))
+        /*if (Resources.Load("Temp/" + animClipName + ".fbx"))
         {
-            Debug.Log("Found fbx: " + animationName);
+            Debug.Log("Found fbx: " + animClipName);
         }
         else
         {
             Debug.Log("Cannot find fbx");
-        }
+        }*/
 
-        return controller.AddMotion(clip);
+        return clip;
     }
 
-    // Sentence level
-    public void CreateAnimatorStateTransitions(int sentenceNumber, UnityEditor.Animations.AnimatorState[] states)
+   public void OverrideAnimationClips(AnimatorOverrideController controller, string[] animClipNames)
     {
-        UnityEditor.Animations.AnimatorState idleState = states[0];
+        var currentOverrides = new AnimationClipOverrides(controller.overridesCount);
+        controller.GetOverrides(currentOverrides);
 
-        for (int i = 0; i < states.Length; i++)
+        for (int i = 0; i < animClipNames.Length; i++)
         {
-            UnityEditor.Animations.AnimatorStateTransition transition;
-            if (i + 1 == states.Length)
-            {
-                // last state -> idle
-                transition = states[i].AddTransition(idleState);
-                transition.hasExitTime = true;
-            }
-            else if (i + 1 < states.Length)
-            {
-                transition = states[i].AddTransition(states[i + 1]);
-                transition.hasExitTime = true;
-
-                // add condition for changing the sentence
-                if (i == 0)
-                {
-                    transition.AddCondition(UnityEditor.Animations.AnimatorConditionMode.Equals, sentenceNumber, animCtrlParamName);
-                }
-            }
+            AnimationClip newClip = LoadAnimationClip(animClipNames[i]);
+            string defaultClipName = AnimStates[i];
+            //Debug.Log($"{i} Default: {defaultClipName}");
+            currentOverrides[defaultClipName] = newClip;
         }
 
+        controller.ApplyOverrides(currentOverrides);
+    }
+
+    public void OverrideSingleAnimationClip(AnimatorOverrideController controller, string animClipName, int targetStateIndex)
+    {
+        AnimationClip newClip = LoadAnimationClip(animClipName);
+        controller[AnimStates[targetStateIndex]] = newClip;
+    }
+
+    public void ChangeAnimationState(string stateName)
+    {
+        _avatarAnimator.Play(stateName);
+    }
+
+    public void PrintOverrideAnimationClips(AnimatorOverrideController controller)
+    {
+        var overrides = new AnimationClipOverrides(controller.overridesCount);
+        controller.GetOverrides(overrides);
+        for (int i = 0; i < overrides.Capacity; i++)
+        {
+            Debug.Log($"{i} {overrides[i]}");
+        }
     }
 }

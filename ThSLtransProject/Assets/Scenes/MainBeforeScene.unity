@@ -284,6 +284,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5149216059403532982, guid: 7a2d2657e0ad303448a9c9d1386ec850,
+        type: 3}
+      propertyPath: defaultAnimCtrlPath
+      value: 02RainAnimCtrl
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a2d2657e0ad303448a9c9d1386ec850, type: 3}
 --- !u!1 &224343067

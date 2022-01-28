@@ -14748,7 +14748,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   changeSentence: 0
   changeCtrl: 0
-  animCtrlNameToBeDeleted: 
+  animCtrlNameToBeDeleted: newController
   newAnimCtrlName: newController
 --- !u!1 &8343387700038839664
 GameObject:

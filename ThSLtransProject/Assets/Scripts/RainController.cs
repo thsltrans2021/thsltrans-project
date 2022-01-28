@@ -1,34 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 public class RainController : MonoBehaviour
 {
 
-    public bool changeSentence = false;
-    public bool changeCtrl = false;
-    public string animCtrlNameToBeDeleted = "newController";
-    public string newAnimCtrlName = "newController";
-    
-    Animator animator;
-    UnityEditor.Animations.AnimatorController newAnimatorCtrl;
-    private AnimationManager animManager;
-    private string defaultAnimCtrlPath = "RainAnimCtrl";
-   
-    const string IDLE_ANIM = "Rain@idle";
-    const string MYSELF_ANIM = "I";
-    const string WALK_ANIM = "PERSONbody-WALK";
-    const string YOU_ANIM = "YOU";
+    public bool ChangeSentence = false;
+    public bool ChangeCtrl = false;
+    public string DefaultAnimCtrlPath = "02RainAnimCtrl";
 
-    string[] ANIM_NAMES = { IDLE_ANIM, MYSELF_ANIM, WALK_ANIM, YOU_ANIM };
+    private Animator _animator;
+    private AnimationManager _animManager;
     
+    const string IdleAnim = "Rain@idle";
+    const string MyselfAnim = "I";
+    const string WalkAnim = "PERSONbody-WALK";
+    const string YouAnim = "YOU";
+    const string MoneyAnim = "MONEY";
+        
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponent<Animator>();
-        animManager = new AnimationManager(animator);
-        animManager.LoadAnimatorControllerToAnimator(defaultAnimCtrlPath);
+        _animator = GetComponent<Animator>();
+        _animManager = new AnimationManager(_animator, DefaultAnimCtrlPath);
     }
 
     // Update is called once per frame
@@ -37,62 +31,49 @@ public class RainController : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.P))
         {
-            animManager.StartAnimation();
+            _animManager.PlayAnimation();
+            //animManager.ChangeAnimationState("walk01");
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            _animManager.ForceStopAnimation();
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            changeSentence = !changeSentence;
+            ChangeSentence = !ChangeSentence;
+            /*
             if (defaultAnimCtrlPath == "RainAnimCtrl")
             {
                 animator.SetBool("Change", changeSentence);
-            }
+            }*/
         }
 
         if (Input.GetKeyDown(KeyCode.C))
         {
             Debug.Log("Change animator controller back");
-            changeCtrl = !changeCtrl;
-            animManager.LoadAnimatorControllerToAnimator(defaultAnimCtrlPath);
+            ChangeCtrl = !ChangeCtrl;
+            _animManager.LoadAnimatorControllerToAnimator(DefaultAnimCtrlPath);
         }
-
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            Debug.Log("Create new animator controller: " + newAnimCtrlName);
-            newAnimatorCtrl = animManager.CreateAnimatorController(newAnimCtrlName);
-        }
+            Debug.Log("Assign new override anim ctrl");
 
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Debug.Log("Assign new anim ctrl");
+            var overrideController = _animManager.CreateAnimatorOverrideController();
+            string[] animNames = { YouAnim, WalkAnim };
+            _animManager.OverrideAnimationClips(overrideController, animNames);
+            _animManager.OverrideSingleAnimationClip(overrideController, WalkAnim, 3);
 
-            if (newAnimatorCtrl != null)
-            {
-                // TODO: retrieve from DB or load if exist
-                var idleState = animManager.AddAnimationClip(newAnimatorCtrl, IDLE_ANIM);
-                var myselfState = animManager.AddAnimationClip(newAnimatorCtrl, MYSELF_ANIM);
-                var youState = animManager.AddAnimationClip(newAnimatorCtrl, YOU_ANIM);
-                var walkState = animManager.AddAnimationClip(newAnimatorCtrl, WALK_ANIM);
-
-                UnityEditor.Animations.AnimatorState[] sentence1 = { idleState, myselfState, walkState };
-                UnityEditor.Animations.AnimatorState[] sentence2 = { idleState, youState, walkState };
-
-                animManager.CreateAnimatorStateTransitions(1, sentence1);
-                animManager.CreateAnimatorStateTransitions(2, sentence2);
-
-                animManager.AssignAnimatorControllerToAnimator(newAnimatorCtrl);
-            }
-            else
-            {
-                Debug.Log("Cannot find " + newAnimCtrlName);
-            }
-
+            _animManager.PrintOverrideAnimationClips(overrideController);
+            _animManager.AssignOverrideControllerToAvatarAnimatorController(overrideController);
+            _animManager.SetAnimationEndingPosition(4);
         }
 
         if (Input.GetKeyDown(KeyCode.X))
         {
-            animManager.DeleteAnimatorController(animManager.LoadAnimatorController(animCtrlNameToBeDeleted));
+            _animManager.ResetAnimatorControllerStates();
         }
     }
 }
