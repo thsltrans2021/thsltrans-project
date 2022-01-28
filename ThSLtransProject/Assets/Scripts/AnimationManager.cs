@@ -23,7 +23,8 @@ public class AnimationManager
 
     private Animator _avatarAnimator;
     private RuntimeAnimatorController _defaultAvatarAnimatorCtrl;
-    private string[] AnimStates = { "state1", "state2", "state3", "state4", "state5", "state6", "state7", "state8", "state9", "state10" };
+    private string[] AnimStates1 = { "state1-1", "state2-1", "state3-1", "state4-1", "state5-1", "state6-1", "state7-1", "state8-1", "state9-1", "state10-1" };
+    private string[] AnimStates2 = { "state1-2", "state2-2", "state3-2", "state4-2", "state5-2", "state6-2", "state7-2", "state8-2", "state9-2", "state10-2" };
 
     private const string AnimCtrlParamPlay = "Play";
     private const string AnimCtrlParamEnd = "End";
@@ -67,7 +68,7 @@ public class AnimationManager
     {
         Object.Destroy(_avatarAnimator.runtimeAnimatorController);
         _avatarAnimator.runtimeAnimatorController = _defaultAvatarAnimatorCtrl;
-        SetAnimationEndingPosition(AnimStates.Length);
+        SetAnimationEndingPosition(AnimStates1.Length);
         ForceStopAnimation();
     }
 
@@ -129,7 +130,7 @@ public class AnimationManager
         return clip;
     }
 
-   public void OverrideAnimationClips(AnimatorOverrideController controller, string[] animClipNames)
+   public void OverrideAnimationClips(AnimatorOverrideController controller, string[] animClipNames, int sentencePosition)
     {
         var currentOverrides = new AnimationClipOverrides(controller.overridesCount);
         controller.GetOverrides(currentOverrides);
@@ -137,7 +138,11 @@ public class AnimationManager
         for (int i = 0; i < animClipNames.Length; i++)
         {
             AnimationClip newClip = LoadAnimationClip(animClipNames[i]);
-            string defaultClipName = AnimStates[i];
+            string defaultClipName = AnimStates1[i];
+            if (sentencePosition == 2)
+            {
+                defaultClipName = AnimStates2[i];
+            }
             //Debug.Log($"{i} Default: {defaultClipName}");
             currentOverrides[defaultClipName] = newClip;
         }
@@ -145,10 +150,16 @@ public class AnimationManager
         controller.ApplyOverrides(currentOverrides);
     }
 
-    public void OverrideSingleAnimationClip(AnimatorOverrideController controller, string animClipName, int targetStateIndex)
+    public void OverrideSingleAnimationClip(AnimatorOverrideController controller, string animClipName, int targetStateIndex, int sentencePosition)
     {
         AnimationClip newClip = LoadAnimationClip(animClipName);
-        controller[AnimStates[targetStateIndex]] = newClip;
+        if (sentencePosition == 1)
+        {
+            controller[AnimStates1[targetStateIndex]] = newClip;
+        } else
+        {
+            controller[AnimStates2[targetStateIndex]] = newClip;
+        }
     }
 
     public void ChangeAnimationState(string stateName)

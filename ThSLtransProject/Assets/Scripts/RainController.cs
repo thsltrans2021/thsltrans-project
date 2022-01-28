@@ -63,8 +63,8 @@ public class RainController : MonoBehaviour
 
             var overrideController = _animManager.CreateAnimatorOverrideController();
             string[] animNames = { YouAnim, WalkAnim };
-            _animManager.OverrideAnimationClips(overrideController, animNames);
-            _animManager.OverrideSingleAnimationClip(overrideController, WalkAnim, 3);
+            _animManager.OverrideAnimationClips(overrideController, animNames, 1);
+            _animManager.OverrideSingleAnimationClip(overrideController, MoneyAnim, 3, 2);
 
             _animManager.PrintOverrideAnimationClips(overrideController);
             _animManager.AssignOverrideControllerToAvatarAnimatorController(overrideController);
