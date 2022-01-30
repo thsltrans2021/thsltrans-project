@@ -1444,6 +1444,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NavbarPanel-v3
       objectReference: {fileID: 0}
+    - target: {fileID: 5860676641986394352, guid: 36cb1b6ad19965543920cb672fc0421b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5860676641986394353, guid: 36cb1b6ad19965543920cb672fc0421b,
         type: 3}
       propertyPath: m_Pivot.x
