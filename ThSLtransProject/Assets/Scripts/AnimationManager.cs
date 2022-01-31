@@ -145,11 +145,18 @@ public class AnimationManager
 
     public void ResetAnimatorControllerStates()
     {
-        Object.Destroy(_avatarAnimator.runtimeAnimatorController);
+        Debug.Log("Reset animator controller");
+        //Object.Destroy(_avatarAnimator.runtimeAnimatorController);
+        Object.DestroyImmediate(_avatarAnimator.runtimeAnimatorController, true);
         _avatarAnimator.runtimeAnimatorController = _defaultAvatarAnimatorCtrl;
         SetAnimationEndingPosition(AnimStates1.Length, 1);
         SetAnimationEndingPosition(AnimStates2.Length, 2);
         ForceStopAnimation();
+    }
+
+    public void ResetSentencePlayCount()
+    {
+        _playCount = 0;
     }
 
     // Position starts at 1, unlike the index which starts at 0
@@ -194,6 +201,7 @@ public class AnimationManager
         return Resources.Load(AnimCtrlPath + animCtrlFilename) as RuntimeAnimatorController;
     }
 
+    // consider using in-mem cache
     public AnimationClip LoadAnimationClip(string animClipName)
     {
         AnimationClip clip = Resources.Load(AnimationPath + animClipName) as AnimationClip;
@@ -255,8 +263,12 @@ public class AnimationManager
         _avatarAnimator.Play(stateName);
     }
 
-    public void PrintOverrideAnimationClips(AnimatorOverrideController controller)
+    public void PrintOverrideAnimationClips(AnimatorOverrideController controller = null)
     {
+        if (controller == null)
+        {
+            controller = _avatarAnimator.runtimeAnimatorController as AnimatorOverrideController;
+        }
         var overrides = new AnimationClipOverrides(controller.overridesCount);
         controller.GetOverrides(overrides);
         for (int i = 0; i < overrides.Capacity; i++)
