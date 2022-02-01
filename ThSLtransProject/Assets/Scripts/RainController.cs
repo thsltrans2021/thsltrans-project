@@ -26,15 +26,6 @@ public class RainController : MonoBehaviour
     private AnimatorOverrideController _overrideController;
     private int _paragraphIndex = -1;
     private int _sentenceIndex = 0;
-    //private List<List<string>> _paragraph = new List<List<string>>()
-    //{
-    //    new List<string>() { YouAnim, WalkAnim },
-    //    new List<string>() { MyselfAnim, MoneyAnim, WalkAnim, YouAnim },
-    //    new List<string>() { MoneyAnim, WalkAnim },
-    //    new List<string>() { YouAnim, MyselfAnim, WalkAnim, WalkAnim },
-    //    new List<string>() { MyselfAnim, MoneyAnim, YouAnim, MoneyAnim },
-    //};
-
     private List<List<List<string>>> _paragraphs = new List<List<List<string>>>()
     {
         new List<List<string>>()
@@ -60,15 +51,12 @@ public class RainController : MonoBehaviour
         _nextSentencePosition = 0;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         _animator = GetComponent<Animator>();
         _animManager = new AnimationManager(_animator, DefaultAnimCtrlPath);
-        //_overrideController = _animManager.CreateAnimatorOverrideController();
     }
 
-    // Update is called once per frame
     void Update()
     {
         _animManager.UpdateSentencePositionStatus();
@@ -83,8 +71,7 @@ public class RainController : MonoBehaviour
             _paragraphIndex = 0;
         }
 
-        // TODO: still weird when changing paragraph -> seems like it plays default anim
-        // either endParam or override clips are wrong
+        // TODO: still weird when changing paragraph -> no separation at all
         Debug.Log($"paragraphIndex: {_paragraphIndex}");
         if (_paragraphIndex >= 0 && _paragraphIndex < _paragraphs.Count)
         {

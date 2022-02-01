@@ -75,7 +75,6 @@ public class AnimationManager
         //ChangeAnimationState(ANIM_STATES[0]);
     }
 
-    // maybe use param to track if the first state of either sentence is played
     public int GetCurrentPlayingSentencePosition()
     {
         if (_avatarAnimator.GetBool(AnimCtrlParamIsP1Started))
@@ -146,7 +145,6 @@ public class AnimationManager
     public void ResetAnimatorControllerStates()
     {
         Debug.Log("Reset animator controller");
-        //Object.Destroy(_avatarAnimator.runtimeAnimatorController);
         Object.DestroyImmediate(_avatarAnimator.runtimeAnimatorController, true);
         _avatarAnimator.runtimeAnimatorController = _defaultAvatarAnimatorCtrl;
         SetAnimationEndingPosition(AnimStates1.Length, 1);
