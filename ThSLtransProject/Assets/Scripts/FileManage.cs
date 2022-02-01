@@ -7,15 +7,15 @@ using UnityEngine.UI;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+
 
 public class FileManage : MonoBehaviour
 {
-    string path;
-    string namePDF = "test";
-    // public Transform contentWindow;
-    // public GameObject recallTextObject;
-
-    public void stratText() {
+    string namePDF;
+/*    public void stratText()
+    {
 
         // string readFromFilePath = Application.streamingAssetsPath + "test" + ".txt";
         string readFromFilePath = "Assets/Resources/test.txt";
@@ -36,39 +36,136 @@ public class FileManage : MonoBehaviour
         // }
 
         Debug.Log(fineLines.Count());
-     
+
         for (int i = 0; i < fineLines.Count; i++)
+        {
+            if (fineLines[i] == "")
             {
-                if (fineLines[i] == "")
-                {
-                    fineLines.RemoveAt(i--);
-                }
-                else {
-                    fineLines[i] = fineLines[i].Trim();
-                     // Instantiate(recallTextObject, contentWindow);
-                    // recallTextObject.GetComponent<Text>().text += (fineLines[i] + "\n" );
-                    Debug.Log( fineLines[i]);
-                }
+                fineLines.RemoveAt(i--);
             }
+            else
+            {
+                fineLines[i] = fineLines[i].Trim();
+                // Instantiate(recallTextObject, contentWindow);
+                // recallTextObject.GetComponent<Text>().text += (fineLines[i] + "\n" );
+                Debug.Log(fineLines[i]);
+            }
+        }
 
         Debug.Log(fineLines.Count());
 
+    }*/
+
+    public void PostData() => StartCoroutine(PostDataToApi());
+    public IEnumerator PostDataToApi()
+    {
+
+        string readFromFilePath = "Assets/Resources/test2.txt";
+        List<string> paragraphList = File.ReadLines(readFromFilePath).ToList();
+        var myList = readFromFilePath.Split(new string[] { "\r\n" }, StringSplitOptions.None).ToList();
+        for (int i = 0; i < paragraphList.Count; i++)
+        {
+            if (paragraphList[i] == "")
+            {
+                paragraphList.RemoveAt(i--);
+            }
+            else
+            {
+                paragraphList[i] = paragraphList[i].Trim();
+                Debug.Log(paragraphList[i]);
+
+            }
+        }
+
+        Paragraph dataToPost = new Paragraph()
+        {
+            paragraphs = paragraphList,
+            lang = "en"
+        }; 
+
+        string url = "https://thsltrans-api.herokuapp.com/api/trans/translate";
+        var dataObject = new DataObject() { data = dataToPost};
+        string toJson = JsonUtility.ToJson(dataObject);
+        Debug.Log(toJson);
+
+        var request = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(toJson);
+        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        yield return request.SendWebRequest();
+
+        var responseData = JsonUtility.FromJson<JsonResponseOut>(request.downloadHandler.text);
+        Debug.Log(request.downloadHandler.text);
+
+        List<List<List<string>>> paragraphs = new List<List<List<string>>>();
+        List<List<string>> thsl_trans = new List<List<string>>();
+        List<string> gross = new List<string>();
+
+        foreach (var dataResponse in responseData.data)
+        {
+            paragraphs.Add(thsl_trans); 
+            foreach (var thsl in dataResponse.thsl_translation)
+            {
+                thsl_trans.Add(gross);
+                foreach (var word in thsl.Split(','))
+                {
+                    gross.Add(word);
+
+                }
+            }
+        }
+
+        Debug.Log(paragraphs[2][0][0]);
 
     }
 
     // public void BrowseFile()
     // {
     //     path = EditorUtility.OpenFilePanel("Show","", "pdf");
-    
+
     //     // StartCoroutine(openPDF());
     // }
 
 
     void openPDF()
     {
-        TextAsset pdfTem = Resources.Load("PDFs/"+namePDF, typeof(TextAsset)) as TextAsset;
-        System.IO.File.WriteAllBytes(Application.persistentDataPath + "/"+namePDF+".pdf", pdfTem.bytes);
-        Application.OpenURL(Application.persistentDataPath+"/"+namePDF+".pdf");
+        namePDF = "test";
+        TextAsset pdfTem = Resources.Load("PDFs/" + namePDF, typeof(TextAsset)) as TextAsset;
+        System.IO.File.WriteAllBytes(Application.persistentDataPath + "/" + namePDF + ".pdf", pdfTem.bytes);
+        Application.OpenURL(Application.persistentDataPath + "/" + namePDF + ".pdf");
     }
 }
+
+[System.Serializable]
+public class Paragraph
+{
+    public List<string> paragraphs;
+    public string lang;
+}
+
+
+[System.Serializable]
+public class DataObject
+{
+    public Paragraph data;
+
+}
+
+[System.Serializable]
+public class JsonResponseIn
+{
+    public string original;
+    public int p_number;
+    public List<string> thsl_translation;
+
+}
+
+[System.Serializable]
+public class JsonResponseOut
+{
+    public List<JsonResponseIn> data;
+    public string message;
+}
+
 
