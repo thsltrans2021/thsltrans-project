@@ -1025,7 +1025,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 318538428}
         m_TargetAssemblyTypeName: FileManage, Assembly-CSharp
-        m_MethodName: GetData
+        m_MethodName: PostData
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

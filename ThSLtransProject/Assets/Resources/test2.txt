@@ -1,5 +1,3 @@
-He walks
-Walk
-
-
-
+He walks. You walks.
+walk
+He walks.

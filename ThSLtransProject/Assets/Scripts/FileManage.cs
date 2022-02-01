@@ -13,11 +13,8 @@ using System.Text;
 
 public class FileManage : MonoBehaviour
 {
-    string path;
     string namePDF;
-    string message;
-
-public void stratText()
+/*    public void stratText()
     {
 
         // string readFromFilePath = Application.streamingAssetsPath + "test" + ".txt";
@@ -57,13 +54,12 @@ public void stratText()
 
         Debug.Log(fineLines.Count());
 
-    }
+    }*/
 
-    public void GetData() => StartCoroutine(PostData());
-    public IEnumerator PostData()
+    public void PostData() => StartCoroutine(PostDataToApi());
+    public IEnumerator PostDataToApi()
     {
 
-        WWWForm form = new WWWForm();
         string readFromFilePath = "Assets/Resources/test2.txt";
         List<string> paragraphList = File.ReadLines(readFromFilePath).ToList();
         var myList = readFromFilePath.Split(new string[] { "\r\n" }, StringSplitOptions.None).ToList();
@@ -81,9 +77,6 @@ public void stratText()
             }
         }
 
-        // paragraphs = paragraphList;
-        // data.Add("p" , fineLines);
-
         Paragraph dataToPost = new Paragraph()
         {
             paragraphs = paragraphList,
@@ -91,12 +84,9 @@ public void stratText()
         }; 
 
         string url = "https://thsltrans-api.herokuapp.com/api/trans/translate";
-
         var dataObject = new DataObject() { data = dataToPost};
-   
         string toJson = JsonUtility.ToJson(dataObject);
         Debug.Log(toJson);
-        // using (UnityWebRequest request = UnityWebRequest.Get(uri))
 
         var request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(toJson);
@@ -107,12 +97,26 @@ public void stratText()
 
         var responseData = JsonUtility.FromJson<JsonResponseOut>(request.downloadHandler.text);
         Debug.Log(request.downloadHandler.text);
-        Debug.Log(responseData.data[0].thsl_translation[0].myList.Count);
-        /*foreach (List<string> element in responseData.data[0].thsl_translation)
+
+        List<List<List<string>>> paragraphs = new List<List<List<string>>>();
+        List<List<string>> thsl_trans = new List<List<string>>();
+        List<string> gross = new List<string>();
+
+        foreach (var dataResponse in responseData.data)
         {
-            Debug.Log(element.Count);
-        }*/
-        // Debug.Log("Status Code: " + request.downloadHandler.text);
+            paragraphs.Add(thsl_trans); 
+            foreach (var thsl in dataResponse.thsl_translation)
+            {
+                thsl_trans.Add(gross);
+                foreach (var word in thsl.Split(','))
+                {
+                    gross.Add(word);
+
+                }
+            }
+        }
+
+        Debug.Log(paragraphs[2][0][0]);
 
     }
 
@@ -132,6 +136,7 @@ public void stratText()
         Application.OpenURL(Application.persistentDataPath + "/" + namePDF + ".pdf");
     }
 }
+
 [System.Serializable]
 public class Paragraph
 {
@@ -152,7 +157,7 @@ public class JsonResponseIn
 {
     public string original;
     public int p_number;
-    public List<ListWrapper> thsl_translation;
+    public List<string> thsl_translation;
 
 }
 
@@ -163,10 +168,4 @@ public class JsonResponseOut
     public string message;
 }
 
-
-[System.Serializable]
-public class ListWrapper
-{
-    public List<string> myList;
-}
 
