@@ -30,7 +30,7 @@ public class RainController : MonoBehaviour
     {
         new List<List<string>>()
         {
-            new List<string>() { YouAnim, WalkAnim },
+            new List<string>() { "WORK-FROM-HOME", "1", "2" },
             new List<string>() { YouAnim, MoneyAnim },
             new List<string>() { MoneyAnim, WalkAnim },
             new List<string>() { YouAnim, WalkAnim, WalkAnim },
