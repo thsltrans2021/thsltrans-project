@@ -14,48 +14,49 @@ using System.Text;
 public class FileManage : MonoBehaviour
 {
     string namePDF;
-/*    public void stratText()
-    {
-
-        // string readFromFilePath = Application.streamingAssetsPath + "test" + ".txt";
-        string readFromFilePath = "Assets/Resources/test.txt";
-
-        // // string[] readText = File.ReadAllLines(path);
-
-        List<string> fineLines = File.ReadLines(readFromFilePath).ToList();
-        // List<string> fineLines = File.ReadAllLines(readFromFilePath).stream().filter(str -> !str.trim().isEmpty()).collect(Collectors.toList());
-        // List<string> fineLines = File.ReadAllLines(readFromFilePath).Where(s => s.Trim() != string.Empty).ToArray();
-        // string inLine = reader.ReadToEnd(readFromFilePath);
-        var myList = readFromFilePath.Split(new string[] { "\r\n" }, StringSplitOptions.None).ToList();
-        // myList = myList.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
-
-        // var doc = readFromFilePath.Split(new string[] { "\r\n" } , System.StringSplitOptions.None);
-        // foreach (string s in readText)
-        // {
-        //     Console.WriteLine(s);
-        // }
-
-        Debug.Log(fineLines.Count());
-
-        for (int i = 0; i < fineLines.Count; i++)
+    /*    public void stratText()
         {
-            if (fineLines[i] == "")
+
+            // string readFromFilePath = Application.streamingAssetsPath + "test" + ".txt";
+            string readFromFilePath = "Assets/Resources/test.txt";
+
+            // // string[] readText = File.ReadAllLines(path);
+
+            List<string> fineLines = File.ReadLines(readFromFilePath).ToList();
+            // List<string> fineLines = File.ReadAllLines(readFromFilePath).stream().filter(str -> !str.trim().isEmpty()).collect(Collectors.toList());
+            // List<string> fineLines = File.ReadAllLines(readFromFilePath).Where(s => s.Trim() != string.Empty).ToArray();
+            // string inLine = reader.ReadToEnd(readFromFilePath);
+            var myList = readFromFilePath.Split(new string[] { "\r\n" }, StringSplitOptions.None).ToList();
+            // myList = myList.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+
+            // var doc = readFromFilePath.Split(new string[] { "\r\n" } , System.StringSplitOptions.None);
+            // foreach (string s in readText)
+            // {
+            //     Console.WriteLine(s);
+            // }
+
+            Debug.Log(fineLines.Count());
+
+            for (int i = 0; i < fineLines.Count; i++)
             {
-                fineLines.RemoveAt(i--);
+                if (fineLines[i] == "")
+                {
+                    fineLines.RemoveAt(i--);
+                }
+                else
+                {
+                    fineLines[i] = fineLines[i].Trim();
+                    // Instantiate(recallTextObject, contentWindow);
+                    // recallTextObject.GetComponent<Text>().text += (fineLines[i] + "\n" );
+                    Debug.Log(fineLines[i]);
+                }
             }
-            else
-            {
-                fineLines[i] = fineLines[i].Trim();
-                // Instantiate(recallTextObject, contentWindow);
-                // recallTextObject.GetComponent<Text>().text += (fineLines[i] + "\n" );
-                Debug.Log(fineLines[i]);
-            }
-        }
 
-        Debug.Log(fineLines.Count());
+            Debug.Log(fineLines.Count());
 
-    }*/
+        }*/
 
+    public List<List<List<string>>> Paragraphs;
     public void PostData() => StartCoroutine(PostDataToApi());
     public IEnumerator PostDataToApi()
     {
@@ -99,24 +100,34 @@ public class FileManage : MonoBehaviour
         Debug.Log(request.downloadHandler.text);
 
         List<List<List<string>>> paragraphs = new List<List<List<string>>>();
-        List<List<string>> thsl_trans = new List<List<string>>();
-        List<string> gross = new List<string>();
-
         foreach (var dataResponse in responseData.data)
         {
-            paragraphs.Add(thsl_trans); 
+            List<List<string>> thsl_trans = new List<List<string>>();
             foreach (var thsl in dataResponse.thsl_translation)
             {
-                thsl_trans.Add(gross);
+                List<string> gross = new List<string>();
                 foreach (var word in thsl.Split(','))
                 {
                     gross.Add(word);
 
                 }
+                thsl_trans.Add(gross);
             }
+            paragraphs.Add(thsl_trans);
         }
 
-        Debug.Log(paragraphs[2][0][0]);
+        Debug.Log($"Retrieved data, p length: {paragraphs.Count}");
+        for (int k = 0; k < paragraphs.Count; k++)
+        {
+            for (int i = 0; i < paragraphs[k].Count; i++)
+            {
+                for (int j = 0; j < paragraphs[k][i].Count; j++)
+                {
+                    Debug.Log($"p {k}, s {i}, w {j}, {paragraphs[k][i][j]}");
+                }
+            }
+        }
+        Paragraphs = paragraphs;
 
     }
 

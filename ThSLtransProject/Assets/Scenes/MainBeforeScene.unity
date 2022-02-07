@@ -209,6 +209,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1594033547175051665, guid: 7a2d2657e0ad303448a9c9d1386ec850,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4683472876216589291, guid: 7a2d2657e0ad303448a9c9d1386ec850,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -291,6 +296,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a2d2657e0ad303448a9c9d1386ec850, type: 3}
+--- !u!1 &188369857 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5455224092919677265, guid: 7a2d2657e0ad303448a9c9d1386ec850,
+    type: 3}
+  m_PrefabInstance: {fileID: 188369856}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &224343067
 GameObject:
   m_ObjectHideFlags: 0
@@ -827,6 +838,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 2130561036}
+  FileManager: {fileID: 318538427}
+  Avatar: {fileID: 188369857}
 --- !u!4 &965921005
 Transform:
   m_ObjectHideFlags: 0
@@ -1079,36 +1092,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1321273045}
   m_CullTransparentMesh: 0
---- !u!1 &1355856367
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1355856368}
-  m_Layer: 0
-  m_Name: FileControllerTest
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1355856368
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1355856367}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 460, y: 209, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1376012051
 GameObject:
   m_ObjectHideFlags: 0
@@ -1193,8 +1176,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 965921003}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ReadInput
+        m_TargetAssemblyTypeName: TextInput, Assembly-CSharp
+        m_MethodName: PlayTranslationAnimation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

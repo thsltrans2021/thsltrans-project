@@ -17,20 +17,20 @@ public class RainController : MonoBehaviour
     private bool _isInitialOverrideCtrlCreated = false;
 
     const string IdleAnim = "Rain@idle";
-    const string MyselfAnim = "I";
+    const string MyselfAnim = "Pron1";
     const string WalkAnim = "PERSONbody-WALK";
-    const string YouAnim = "YOU";
+    const string YouAnim = "Pron2";
     const string MoneyAnim = "MONEY";
     const string IdleState = "idle";
 
     private AnimatorOverrideController _overrideController;
     private int _paragraphIndex = -1;
     private int _sentenceIndex = 0;
-    private List<List<List<string>>> _paragraphs = new List<List<List<string>>>()
+    /*private List<List<List<string>>> _paragraphs = new List<List<List<string>>>()
     {
         new List<List<string>>()
         {
-            new List<string>() { YouAnim, WalkAnim },
+            new List<string>() { "WORK-FROM-HOME", "1", "2" },
             new List<string>() { YouAnim, MoneyAnim },
             new List<string>() { MoneyAnim, WalkAnim },
             new List<string>() { YouAnim, WalkAnim, WalkAnim },
@@ -40,7 +40,9 @@ public class RainController : MonoBehaviour
         {
             new List<string>() { WalkAnim, YouAnim },
         },
-    };
+    };*/
+    private List<List<List<string>>> _paragraphs;
+    private int _paragraphsLength = 0;
 
     private void ResetAnimationHelperParams()
     {
@@ -68,12 +70,39 @@ public class RainController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             //_startTranslation = true;
-            _paragraphIndex = 0;
+            if (_paragraphs != null)
+            {
+                PlayParagraphs(_paragraphs);
+            }
+        }
+
+        if (Input.GetKey(KeyCode.Q))
+        {
+            Debug.Log("Print current _paragraphs");
+            foreach (List<List<string>> paragraph in _paragraphs)
+            {
+                for (int i = 0; i < paragraph.Count; i++)
+                {
+                    for (int j = 0; j < paragraph[i].Count; j++)
+                    {
+                        Debug.Log($"s {i}, w {j}, {paragraph[i][j]}");
+                    }
+                }
+            }
+        }
+
+        if (_paragraphs != null)
+        {
+            _paragraphsLength = _paragraphs.Count;
+        }
+        else
+        {
+            _paragraphsLength = 0;
         }
 
         // TODO: still weird when changing paragraph -> no separation at all
         Debug.Log($"paragraphIndex: {_paragraphIndex}");
-        if (_paragraphIndex >= 0 && _paragraphIndex < _paragraphs.Count)
+        if (_paragraphIndex >= 0 && _paragraphIndex < _paragraphsLength)
         {
             if (_paragraphIndex == 0 && !_isInitialOverrideCtrlCreated)
             {
@@ -93,15 +122,14 @@ public class RainController : MonoBehaviour
 
                 _paragraphIndex++;
 
-                if (_paragraphIndex < _paragraphs.Count)
+                if (_paragraphIndex < _paragraphsLength)
                 {
                     Debug.Log($"Create override controller {_paragraphIndex}");
                     _overrideController = _animManager.CreateAnimatorOverrideController();
                 }
-                
             }
         }
-        else if (_paragraphIndex >= _paragraphs.Count)
+        else if (_paragraphIndex >= _paragraphsLength)
         {
             Debug.Log("All paragraphs are played");
             _reachEndOfParagraph = false;
@@ -109,6 +137,13 @@ public class RainController : MonoBehaviour
             _isInitialOverrideCtrlCreated = false;
         }
         
+    }
+
+    public void PlayParagraphs(List<List<List<string>>> paragraphs)
+    {
+        _paragraphs = paragraphs;
+        Debug.Log("Play paragraph");
+        _paragraphIndex = 0;
     }
 
     private void PlayGround()
