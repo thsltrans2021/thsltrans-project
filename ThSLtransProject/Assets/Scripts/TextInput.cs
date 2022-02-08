@@ -107,11 +107,19 @@ public class TextInput : MonoBehaviour
         }
         Paragraphs = paragraphs;
 
-
+        List<List<List<string>>> _paragraphs= Paragraphs;
+        if (_paragraphs == null)
+        {
+            Debug.Log("Where is paragraph data?");
+        }
+        else
+        {
+            _avatarController.PlayParagraphs(_paragraphs);
+        }
 
     }
 
-    public void PlayTranslationAnimation()
+/*    public void PlayTranslationAnimation()
     {
         List<List<List<string>>> paragraphs = Paragraphs;
         if (paragraphs == null)
@@ -122,7 +130,7 @@ public class TextInput : MonoBehaviour
         {
             _avatarController.PlayParagraphs(paragraphs);
         }
-    }
+    }*/
 }
 
 
