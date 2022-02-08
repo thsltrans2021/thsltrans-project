@@ -107,14 +107,13 @@ public class TextInput : MonoBehaviour
         }
         Paragraphs = paragraphs;
 
-        List<List<List<string>>> _paragraphs= Paragraphs;
-        if (_paragraphs == null)
+        if (Paragraphs == null)
         {
             Debug.Log("Where is paragraph data?");
         }
         else
         {
-            _avatarController.PlayParagraphs(_paragraphs);
+            _avatarController.PlayParagraphs(Paragraphs);
         }
 
     }
