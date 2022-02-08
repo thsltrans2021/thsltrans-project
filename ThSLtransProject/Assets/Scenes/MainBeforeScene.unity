@@ -190,7 +190,7 @@ MonoBehaviour:
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 0
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 
@@ -489,6 +489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af61cbe3620514efea05da236ce8db7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  input: {fileID: 2130561036}
 --- !u!4 &318538429
 Transform:
   m_ObjectHideFlags: 0
@@ -838,7 +839,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 2130561036}
-  FileManager: {fileID: 318538427}
   Avatar: {fileID: 188369857}
 --- !u!4 &965921005
 Transform:
@@ -1044,7 +1044,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 318538428}
         m_TargetAssemblyTypeName: FileManage, Assembly-CSharp
-        m_MethodName: PostData
+        m_MethodName: PostDataToApi
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1177,7 +1177,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 965921003}
         m_TargetAssemblyTypeName: TextInput, Assembly-CSharp
-        m_MethodName: PlayTranslationAnimation
+        m_MethodName: PostInput
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1667,7 +1667,7 @@ MonoBehaviour:
   m_InputType: 0
   m_AsteriskChar: 42
   m_KeyboardType: 0
-  m_LineType: 0
+  m_LineType: 2
   m_HideMobileInput: 0
   m_CharacterValidation: 0
   m_CharacterLimit: 0
