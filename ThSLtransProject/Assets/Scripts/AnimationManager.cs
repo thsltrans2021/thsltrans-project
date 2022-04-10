@@ -28,6 +28,34 @@ public class AnimationManager
     private string[] AnimStates1 = { "state1-1", "state2-1", "state3-1", "state4-1", "state5-1", "state6-1", "state7-1", "state8-1", "state9-1", "state10-1" };
     private string[] AnimStates2 = { "state1-2", "state2-2", "state3-2", "state4-2", "state5-2", "state6-2", "state7-2", "state8-2", "state9-2", "state10-2" };
 
+    private Dictionary<string, string> tempNames = new Dictionary<string, string>()
+    {
+        { "ONCE-UPON-A-TIME", "ouat" },
+        { "PERSONone-STAND-FROM-GROUP", "psg" },
+        { "BELL", "bell" },
+        { "GROUP", "gp" },
+        { "THINK-OF-PLAN", "thk-plan" },
+        { "OLD", "od" },
+        { "TIEDneck-BELL", "tb" },
+        { "SCARY", "sc" },
+        { "REJECT-SOLUTIONmultiple", "rp" },
+        { "ANNOUNCE", "ann" },
+        { "HAVE-MEETING", "hvmt" },
+        { "PLAN", "pln" },
+        { "PEOPLE-DISCUSS", "ppld" },
+        { "CAT-ATTACK-US", "catk" },
+        { "PEOPLE-GATHER", "pplg" },
+        { "PROTECT-OURSELVES", "ptus" },
+        { "MOUSE-COME", "mc" },
+        { "PRESENTmultiple-SOLUTION", "ps" },
+        { "YOUNG", "yg" },
+        { "THINK", "thk" },
+        { "CAT-WALK", "cw" },
+        { "BLUE", "bl" },
+        { "MOUSE", "mu" },
+        { "MANY", "mn" },
+    };
+
     private const string AnimCtrlParamPlay = "Play";
     private const string AnimCtrlParamEnd = "End";
     private const string AnimCtrlParamEnd2 = "End2";
@@ -129,7 +157,7 @@ public class AnimationManager
                 Debug.Log("[0] Play count: " + SentencePlayCount);
             }
             _isP1StartedPreviousState = _isP1StartedCurrentState;
-            
+
         }
         else if (_isP2StartedPreviousState != _isP2StartedCurrentState)
         {
@@ -191,7 +219,7 @@ public class AnimationManager
         {
             return new AnimatorOverrideController(animator.runtimeAnimatorController);
         }
-        
+
     }
 
     public RuntimeAnimatorController LoadAnimatorController(string animCtrlFilename)
@@ -202,10 +230,17 @@ public class AnimationManager
     // consider using in-mem cache
     public AnimationClip LoadAnimationClip(string animClipName)
     {
-        AnimationClip clip = Resources.Load(AnimationPath + animClipName) as AnimationClip;
+        string resourcePath = AnimationPath + animClipName;
+        if (tempNames.ContainsKey(animClipName))
+        {
+            Debug.Log($"Use unity name for {animClipName}");
+            resourcePath = AnimationPath + tempNames[animClipName];
+        }
+
+        AnimationClip clip = Resources.Load(resourcePath) as AnimationClip;
         if (clip == null)
         {
-            Debug.Log($"Cannot find an animation clip called {animClipName}");
+            Debug.Log($"Cannot find an animation clip called {animClipName} at '{AnimationPath + animClipName}'");
         }
         else
         {
@@ -224,7 +259,7 @@ public class AnimationManager
         return clip;
     }
 
-   public void OverrideAnimationClips(AnimatorOverrideController controller, List<string> animClipNames, int sentencePosition)
+    public void OverrideAnimationClips(AnimatorOverrideController controller, List<string> animClipNames, int sentencePosition)
     {
         var currentOverrides = new AnimationClipOverrides(controller.overridesCount);
         controller.GetOverrides(currentOverrides);
