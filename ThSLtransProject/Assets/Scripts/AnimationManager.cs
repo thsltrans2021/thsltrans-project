@@ -54,6 +54,7 @@ public class AnimationManager
         { "BLUE", "bl" },
         { "MOUSE", "mu" },
         { "MANY", "mn" },
+        { "Pron3", "p3" },
     };
 
     private const string AnimCtrlParamPlay = "Play";
