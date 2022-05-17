@@ -101,7 +101,7 @@ public class RainController : MonoBehaviour
         }
 
         // TODO: still weird when changing paragraph -> no separation at all
-        Debug.Log($"paragraphIndex: {_paragraphIndex}");
+     /*   Debug.Log($"paragraphIndex: {_paragraphIndex}");*/
         if (_paragraphIndex >= 0 && _paragraphIndex < _paragraphsLength)
         {
             if (_paragraphIndex == 0 && !_isInitialOverrideCtrlCreated)
@@ -110,11 +110,12 @@ public class RainController : MonoBehaviour
                 _overrideController = _animManager.CreateAnimatorOverrideController();
                 _isInitialOverrideCtrlCreated = true;
             }
-            
+
             PlayAnimationsOfOneParagraph(_paragraphs[_paragraphIndex]);
 
             // check if all anim are played and now is playing idle before changing paragraphIndex
-            if (_reachEndOfParagraph && _animManager.IsAnimationStatePlayed(IdleState))            {
+            if (_reachEndOfParagraph && _animManager.IsAnimationStatePlayed(IdleState))
+            {
                 Debug.Log("Switch to next paragraph");
                 _animManager.ResetAnimatorControllerStates();
                 _animManager.ResetSentencePlayCount();
@@ -136,7 +137,7 @@ public class RainController : MonoBehaviour
             _paragraphIndex = -1;
             _isInitialOverrideCtrlCreated = false;
         }
-        
+
     }
 
     public void PlayParagraphs(List<List<List<string>>> paragraphs)
